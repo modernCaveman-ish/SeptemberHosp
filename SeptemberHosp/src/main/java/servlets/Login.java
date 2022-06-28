@@ -47,9 +47,6 @@ public class Login extends HttpServlet {
         String query = "SELECT * FROM users WHERE username = '" + username
                         + "' AND password = '" + password + "'";
         
-        
-        
-        
         System.out.println(query);
         
         Statement stmt = con.createStatement();

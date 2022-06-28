@@ -1,2 +1,3 @@
 DBConnection\DBConnector.class
 servlets\Login.class
+servlets\GetAllUsers.class

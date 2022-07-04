@@ -10,10 +10,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import DBConnection.DBConnector;
@@ -51,7 +56,8 @@ public class Login extends HttpServlet {
         
         Statement stmt = con.createStatement();
         // Set response content type
-        response.setContentType("text/plain");
+        // response.setContentType("text/plain");   REPLACED
+        response.setContentType("json");
         PrintWriter out = response.getWriter();
         
         //Execute the query
@@ -60,9 +66,23 @@ public class Login extends HttpServlet {
         //Check if there is anything in store
         if( rs.next() ){
             System.out.println(rs.getString("username"));
-            out.println("Valid credentials");
+            response.setStatus(200);
+            // Save it no some JSON file
+            JSONObject json_obj = new JSONObject();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            String col_name;
+            int col_num = rsmd.getColumnCount();
+
+            for(int i=1; i<=col_num; i++){
+                col_name = rsmd.getColumnName(i);
+                json_obj.put(col_name, rs.getString(col_name));
+            }
+
+            // out.println("Welcome, " + rs.getString("username") + "!!");
+            out.println(json_obj.toString());
         } else if( !rs.next() ){
             System.out.println("Incorrect credentials");
+            response.setStatus(401);
             out.println("Invalid credentials");
         }
         

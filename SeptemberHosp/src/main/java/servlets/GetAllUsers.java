@@ -4,12 +4,29 @@
  */
 package servlets;
 
+import DBConnection.DBConnector;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.gson.Gson;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+import java.sql.ResultSetMetaData;
 
 /**
  *
@@ -55,8 +72,55 @@ public class GetAllUsers extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("This is GetAllUsers servlet!!");
-        // Classic stuff build a query and execute it
+        try {
+            System.out.println("This is GetAllUsers servlet!!");
+            // Classic stuff build a query and execute it
+            DBConnector dbConnector = new DBConnector();
+            dbConnector.initializeDatabase();
+
+            response.setContentType("json");
+            PrintWriter out = response.getWriter();
+            Connection con = dbConnector.initializeDatabase();
+            Statement stmt = con.createStatement();
+            // Write a query for Users and another for doctors to print them seperated
+            String get_users_query = "SELECT users.username, users.firstname, users.lastname FROM `users`";
+            String get_doctors_query = "SELECT doctors.username, doctors.firstname, doctors.lastname FROM `doctors`";
+            // Execute and save to ResultSet
+            ResultSet rs = stmt.executeQuery(get_users_query);
+            System.out.println("This is GetAllUsers servlet!!");
+            // Now working with org.json.stuff
+            JSONArray json_arr = new JSONArray();
+            ResultSetMetaData rsmd = rs.getMetaData();
+//            JSONObject json_obj = new JSONObject();
+            String col_name;
+            int col_num = rsmd.getColumnCount();
+            
+            while(rs.next()){
+                JSONObject json_obj = new JSONObject();
+                for(int i=1; i<=col_num; i++){
+                    col_name = rsmd.getColumnName(i);
+                    json_obj.put(col_name, rs.getString(col_name));
+                }
+                json_arr.put(json_obj);
+            }
+            
+            // System.out.println(json_arr.toString());
+            
+            out.println(json_arr.toString());
+            
+            
+            con.close();
+            stmt.close();
+            rs.close();
+            
+            
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(GetAllUsers.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(GetAllUsers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     
     }
 

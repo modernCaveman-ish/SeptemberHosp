@@ -9,6 +9,10 @@
         <servlet-name>GetAllUsers</servlet-name>
         <servlet-class>servlets.GetAllUsers</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>GetAllDoctors</servlet-name>
+        <servlet-class>servlets.GetAllDoctors</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Login</servlet-name>
         <url-pattern>/Login</url-pattern>
@@ -16,6 +20,10 @@
     <servlet-mapping>
         <servlet-name>GetAllUsers</servlet-name>
         <url-pattern>/GetAllUsers</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetAllDoctors</servlet-name>
+        <url-pattern>/GetAllDoctors</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

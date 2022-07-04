@@ -1,8 +1,11 @@
 
 package DBConnection;
 
+import com.google.gson.JsonObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 /**
@@ -25,6 +28,20 @@ public class DBConnector {
         Connection con = DriverManager.getConnection(dbURL, dbUsername, dbPassword);
         
         return con;
+    }
+    
+    
+    public static String getResultsToJSON(ResultSet rs) throws SQLException{
+        ResultSetMetaData metadata = rs.getMetaData();
+        int col_count = metadata.getColumnCount();
+        JsonObject object = new JsonObject();
+        
+        for( int i=1; i<=col_count; i++){
+            String name = metadata.getColumnName(i);
+            String value = rs.getString(i);
+            object.addProperty(name, value);
+        }
+        return object.toString();
     }
     
 }

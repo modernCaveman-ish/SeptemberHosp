@@ -1,7 +1,3 @@
-document.onload = function() {
-    alert("Eisai poytana");
-};
-
 
 function login(){
     let username = document.getElementById("username").value;
@@ -43,38 +39,42 @@ function create_cred(username, pass){
 
 function ajax_login(credentials){
     
-//    $.ajax({
-//        type: "POST",
-//        url: "Login",
-//        data: credentials,
-//        success: function() {
-//            console.log("Success!!");
-//            //Handle the response
-//            alert(this.responseText);
-//            
-//        },
-//        error: function(){
-//            console.log("Fail..");
-//            //Handle the response
-//            alert(this.responseText);
-//        }
-//    })
-//    
-    
+    // new and improved with status codes
     var req = $.ajax({
         type: "POST",
         url: "Login",
         data: credentials,
         success: function() {
-            console.log("Success");
+            console.log("ajax_login request successful.");
         },
         error: function() {
-            console.log("Error");
+            if( req.status === 401 ){
+                alert("Credentials Invalid..");
+            } else{
+                console.log("ajax_login request failed.");
+            }
         }
     }).done(function() {
-        alert(req.responseText);
+        // answers from servlet if credentials are correct or not
+        if( req.status === 200 ){
+            // Handle the JSON
+            let json_ans = JSON.parse(req.responseText);
+            alert("Welcome, " + json_ans.username + "!!");
+
+            // Redirect to another Page
+            // THIS IS PERMANENT, REPLACE IT WITH THE USER PAGE
+            location.href = 'admin_page.html';
+
+            // Maybe i should store the whole JSON answer
+            sessionStorage.setItem("username", json_ans.username);
+
+        } else if( req.status === 401 ){
+            alert("Invalid Credentials.");
+        } else{
+            console.out("Error on AJAX Request.");
+        }
     })
-    
+
 }
 
 

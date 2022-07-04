@@ -8,12 +8,20 @@
 </head>
 <body>
     <div class="main_container">
-        <div class="admin_info">
+        <div class="admin_info" id="admin_info">
             <!-- display admin name and stuff -->
             <h1>Supposed admin info Do it with session</h1>
         </div>
         <div class="admin_panel">
             <!-- display admin's buttons -->
+            <div class="dbUsers" id='dbUsers'>
+                <!-- Display in here the dbUsers registered -->
+                <h3>Users</h3><br>
+                
+            </div>
+            <div class="dbDoctors" id="dbDoctors">
+                <!-- Display in here the dbDoctors registed -->
+            </div>
             <button id="print_members_btn" onclick="printMembers()">Print Members</button>
         </div>
     </div>
